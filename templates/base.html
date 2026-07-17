@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理系统</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <span class="brand">用户管理系统</span>
+            {% if vulnerable_mode is defined %}
+                <span class="mode-badge {% if vulnerable_mode %}mode-badge-danger{% else %}mode-badge-safe{% endif %}">
+                    {{ '⚠️ 脆弱模式' if vulnerable_mode else '✅ 安全模式' }}
+                </span>
+            {% endif %}
+        </div>
+        <div class="nav-right">
+            <a href="/page?name=help" class="nav-link nav-help">📖 帮助</a>
+            <a href="/page?name=about" class="nav-link nav-help">ℹ️ 关于</a>
+            {% if session.get('username') %}
+                <span class="nav-welcome">欢迎，{{ session['username'] }}</span>
+                <a href="/profile" class="nav-link">个人中心</a>
+                <a href="/xml-import" class="nav-link">XML导入</a>
+                <a href="/ping" class="nav-link">Ping测试</a>
+                <a href="/upload" class="nav-link">上传头像</a>
+                <a href="/logout" class="nav-link">退出</a>
+            {% else %}
+                <a href="/login" class="nav-link">登录</a>
+                <a href="/register" class="nav-link">注册</a>
+            {% endif %}
+        </div>
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

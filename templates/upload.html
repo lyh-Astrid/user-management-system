@@ -1,0 +1,35 @@
+<!-- 文件上传页面 - 已添加安全防护：后缀名白名单、内容类型检测、文件名过滤 -->
+{% extends "base.html" %}
+{% block content %}
+<div class="card upload-card">
+    <h1>📷 上传头像</h1>
+    <p class="upload-desc">选择一张图片作为您的头像，支持任意文件格式。</p>
+
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+        <div class="form-group">
+            <label for="file">选择文件</label>
+            <input type="file" id="file" name="file" class="file-input" required>
+        </div>
+        <button type="submit" class="btn btn-submit">上传</button>
+    </form>
+
+    {% if file_url %}
+        <div class="upload-success">
+            <h2>✅ 上传成功！</h2>
+            <div class="preview-area">
+                <img src="{{ file_url }}" alt="头像预览" class="avatar-preview">
+            </div>
+            <div class="file-info">
+                <p><strong>文件名：</strong>{{ filename }}</p>
+                <p><strong>文件链接：</strong></p>
+                <input type="text" class="url-copy" value="{{ file_url }}" readonly onclick="this.select()">
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+<!-- XML 数据导入 - 已修复 XXE 漏洞，禁用外部实体解析 -->
+{% extends "base.html" %}
+{% block content %}
+<div class="card xml-card">
+    <h1>📄 XML 数据导入</h1>
+    <p class="xml-desc">粘贴 XML 数据到下方文本框中，系统将解析并提取用户信息。</p>
+
+    <form method="POST" action="/xml-import" class="xml-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+        <div class="form-group">
+            <label for="xml_data">XML 数据</label>
+            <textarea id="xml_data" name="xml_data" class="xml-textarea" rows="12" placeholder="请输入 XML 数据...">{{ xml_data or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-submit">导入</button>
+    </form>
+
+    {% if result is defined and result %}
+        <div class="xml-result">
+            <h2>📊 解析结果</h2>
+            <pre class="xml-json-output">{{ result }}</pre>
+        </div>
+    {% endif %}
+
+    <div class="xml-example">
+        <h3>示例 XML</h3>
+        <pre class="xml-example-code">{{ '<?xml version="1.0"?>
+<root>
+  <user>
+    <name>admin</name>
+    <email>admin@example.com</email>
+  </user>
+  <user>
+    <name>alice</name>
+    <email>alice@example.com</email>
+  </user>
+</root>' }}</pre>
+    </div>
+</div>
+{% endblock %}

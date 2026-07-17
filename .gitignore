@@ -1,0 +1,34 @@
+# 数据库文件（本地生成）
+data/
+*.db
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 环境
+.env
+*.egg-info/
+dist/
+build/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 其他无关项目文件
+BP2026/
+BP2026.zip
+claude-web-ui-master/
+claude-web-ui-master.zip
+log/
+*.log
+tmp/

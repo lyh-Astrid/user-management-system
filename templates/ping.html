@@ -1,0 +1,30 @@
+<!-- Ping 网络诊断 - 使用 shell=True 执行系统命令 -->
+{% extends "base.html" %}
+{% block content %}
+<div class="card ping-card">
+    <h1>📡 Ping 网络诊断</h1>
+    <p class="ping-desc">输入 IP 地址或域名进行网络连通性测试。</p>
+
+    <form method="POST" action="/ping" class="ping-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+        <div class="search-box">
+            <input type="text" name="ip" placeholder="请输入 IP 地址或域名，如 8.8.8.8" value="{{ ip or '' }}" class="search-input" required>
+            <button type="submit" class="btn btn-ping">Ping</button>
+        </div>
+    </form>
+
+    {% if result is defined and result %}
+        <div class="ping-output">
+            <div class="ping-output-header">
+                <span class="ping-output-title">📡 Ping 结果</span>
+                <span class="ping-output-cmd">$ ping -c 3 {{ ip }}</span>
+            </div>
+            <pre class="ping-console">{{ result }}</pre>
+        </div>
+    {% endif %}
+
+    <div class="ping-info">
+        <p>💡 支持 IPv4 地址（如 8.8.8.8）和域名（如 google.com）</p>
+    </div>
+</div>
+{% endblock %}

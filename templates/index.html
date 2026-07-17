@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if page_content is defined and page_content %}
+    <div class="card page-content-card">
+        {{ page_content | safe }}
+        <div class="page-content-footer">
+            <a href="/" class="btn btn-small">返回首页</a>
+        </div>
+    </div>
+{% elif user %}
+    <div class="card">
+        <h1>欢迎回来，{{ user.username }}！</h1>
+        <div class="user-info">
+            <h2>用户信息</h2>
+            <ul>
+                <li><strong>用户名：</strong>{{ user.username }}</li>
+                <li><strong>邮箱：</strong>{{ user.email }}</li>
+                <li><strong>手机：</strong>{{ user.phone }}</li>
+                <li><strong>角色：</strong>{{ user.role }}</li>
+                <li><strong>余额：</strong>{{ user.balance }}</li>
+            </ul>
+            <p class="security-tip">🔒 密码已通过哈希加密存储，不在前端显示</p>
+        </div>
+        <div class="btn-group">
+            <a href="/logout" class="btn btn-danger">退出登录</a>
+            <a href="/profile" class="btn btn-profile">👤 个人中心</a>
+            <a href="/ping" class="btn btn-ping">📡 Ping测试</a>
+            <a href="/upload" class="btn btn-upload">📷 上传头像</a>
+            <a href="/page?name=help" class="btn btn-help">📖 帮助中心</a>
+            <a href="/page?name=about" class="btn btn-about">ℹ️ 关于</a>
+        </div>
+        {% if user.role == 'admin' %}
+            <div class="mode-toggle-area">
+                <form method="POST" action="/toggle-mode" class="inline-form">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-small">
+                        切换为{{ '✅ 安全模式' if vulnerable_mode else '⚠️ 脆弱模式' }}
+                    </button>
+                </form>
+                <span class="mode-hint">（管理员专用，当前：{{ '脆弱模式 - f-string拼接' if vulnerable_mode else '安全模式 - 参数化查询' }}）</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- URL 抓取功能 -->
+    <div class="card">
+        <h2>🌐 URL 抓取</h2>
+        <form method="POST" action="/fetch-url" class="fetch-form">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+            <div class="search-box">
+                <input type="text" name="url" placeholder="请输入 URL（支持 http/https/file 等）..." value="{{ fetch_url or '' }}" class="search-input">
+                <button type="submit" class="btn">抓取</button>
+            </div>
+        </form>
+
+        {% if fetch_error %}
+            <div class="error-msg">{{ fetch_error }}</div>
+        {% endif %}
+
+        {% if fetch_result is defined and fetch_result %}
+            <div class="fetch-result-wrapper">
+                {{ fetch_result | safe }}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- 搜索功能 -->
+    <div class="card">
+        <h2>用户搜索</h2>
+        <form method="GET" action="/search" class="search-form">
+            <div class="search-box">
+                <input type="text" name="keyword" placeholder="请输入用户名或邮箱搜索..." value="{{ search_keyword or '' }}" class="search-input">
+                <button type="submit" class="btn">搜索</button>
+            </div>
+        </form>
+
+        {% if search_keyword is defined and search_keyword %}
+            <div class="search-results">
+                <h3>搜索结果：关键词 "{{ search_keyword }}"</h3>
+                {% if search_results %}
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>邮箱</th>
+                                <th>手机</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in search_results %}
+                            <tr>
+                                <td>{{ row[0] }}</td>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }}</td>
+                                <td>{{ row[3] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-result">无搜索结果</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% else %}
+    {% if page_content is not defined %}
+        <div class="card">
+            <h1>请先登录</h1>
+            <p>您尚未登录，请点击下方按钮登录系统。</p>
+            <a href="/login" class="btn">前往登录</a>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}
